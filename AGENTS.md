@@ -97,6 +97,8 @@ script, launcher, tests, and documentation. It contains no ROMs, keys, or consol
 - Desktop removal controls may coordinate only normal console-side uninstall. They must preserve PC source
   and prepared artifacts, never edit `Nintendo 3DS` directly, persist pending intent outside Git, restrict
   the simple workflow to base games, and confirm absence automatically after the SD returns.
+- After visible UI changes, regenerate the README screenshot with `docs/make-screenshot.ps1`. It uses
+  demo data only; never publish a screenshot of a real library or card.
 - Show operation progress in the right-hand column, above the SD card. A running job must never add a
   full-width band or shift the header or game list.
 - Hide and reset completed progress bars when an operation ends; persistent full bars must not occupy the

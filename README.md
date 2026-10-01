@@ -5,6 +5,8 @@ want, click one button, and the app converts them, checks them, and copies them 
 you install them on the console with GodMode9. When the card comes back to the PC, the app confirms
 what installed and cleans up after itself.
 
+![The 3DS Game Installer window: a game list with games ticked to add and remove, the SD card, the next step, and an SD card space chart](docs/screenshot.png)
+
 - **One button for every change.** Tick games to add or remove. The button names what it will do, for
   example *Add to SD card* or *Add 2, remove 1*.
 - **Every game is checked first.** Each game is converted on the PC and validated before it reaches
