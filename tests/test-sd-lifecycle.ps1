@@ -232,7 +232,7 @@ $choose = Resolve-ThreeDSSdLifecycle -CurrentTargets @($internal, $card, $second
 Assert-Equal 'Reinserted - identifying' $choose.State 'Two unselected cards were not awaiting a choice.'
 Assert-Equal $false $choose.CanUseSd 'SD work was offered before a card was chosen.'
 if ($choose.StatusText -notmatch 'Choose the card') { throw 'Two connected cards did not ask the user to choose one.' }
-if ($choose.StatusText -match 'Check SD card') { throw 'Two connected cards pointed at Check SD card, which cannot choose between them.' }
+if ($choose.StatusText -match 'Check for changes|Check SD card') { throw 'Two connected cards pointed at a re-check, which cannot choose between them.' }
 if ($choose.HeaderText -match 'Identifying') { throw 'The header claimed identification was in progress while waiting for a choice.' }
 
 $reenumerated = @($internal, (New-Target),

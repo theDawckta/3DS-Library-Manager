@@ -54,12 +54,13 @@ try {
 
     # --- The manager's own functions and controls --------------------------------------
     $ast = [System.Management.Automation.Language.Parser]::ParseFile((Join-Path $repo 'scripts\library-manager.ps1'), [ref]$null, [ref]$null)
-    foreach ($name in 'Invoke-ApplyChanges','Show-StoppedNotice','Register-CopiedBatch','Add-PendingRemoval','Clear-RemovalMark','Get-RemovalChanges','Invoke-RefreshAll','Read-SmartSdState','Complete-GuidedReturn','Resolve-PendingRemoval','Copy-WaitingGames','Copy-GuidedQueue','Show-Notice','Add-GuidedBacklog','Get-GuidedInstallPlan','Save-GuidedInstallState','Save-PreparationFailures','Set-PreparationFailure','Clear-PreparationFailure','Build-ViewItems','Update-SdSpace','New-PieSliceGeometry','Format-SpaceSize','Update-NextStep','Update-SelectionSummary','Apply-Filter','Get-FriendlyTitle') {
+    foreach ($name in 'Get-CardStateName','New-GuidedInstallState','Use-CardState','Use-CardKey','Import-LegacyCardState','Assert-SameCard','Invoke-CheckForChanges','Invoke-ApplyChanges','Show-StoppedNotice','Register-CopiedBatch','Add-PendingRemoval','Clear-RemovalMark','Get-RemovalChanges','Invoke-RefreshAll','Read-SmartSdState','Complete-GuidedReturn','Resolve-PendingRemoval','Copy-WaitingGames','Copy-GuidedQueue','Show-Notice','Add-GuidedBacklog','Get-GuidedInstallPlan','Save-GuidedInstallState','Save-PreparationFailures','Set-PreparationFailure','Clear-PreparationFailure','Build-ViewItems','Update-SdSpace','New-PieSliceGeometry','Format-SpaceSize','Update-NextStep','Update-SelectionSummary','Apply-Filter','Get-FriendlyTitle') {
         $fn = $ast.Find({ param($n) $n -is [System.Management.Automation.Language.FunctionDefinitionAst] -and $n.Name -eq $name }, $true)
         if (-not $fn) { throw "$name not found in the manager." }
         . ([scriptblock]::Create($fn.Extent.Text))
     }
     $script:Logged = New-Object System.Collections.ArrayList
+    $script:CardKey = Get-ThreeDSCardKey -SdRoot $card      # the card this screen shows
     function Add-Log([string]$Message) { [void]$script:Logged.Add($Message) }
     function Pump-Ui {}
     function Save-Preferences {}
@@ -132,7 +133,7 @@ try {
     Check (@($script:GuidedInstall.Backlog).Count -eq 0) 'nothing is left waiting on the PC'
     Check ($script:NextStepTitle.Text -eq 'Batch ready - 2 games') "Next step title: '$($script:NextStepTitle.Text)'"
     Check ($script:InlineNotice -match '^Copied 2 games to the SD card; 1 failed' -and $script:InlineNotice -match 'Shin Megami Tensei IV: The source file is damaged\.' -and $script:InlineNotice -notmatch 'Safely Eject') "the notice reports the batch and the failure: '$($script:InlineNotice)'"
-    $saved = Get-ThreeDSManagerState -Name 'guided-install.json'
+    $saved = Get-ThreeDSManagerState -Name (Get-CardStateName 'guided-install')
     Check ($saved -and [string]$saved.ActiveBatchId -eq $folders[0]) 'the batch was saved'
     $failedRow = @($script:ViewItems | Where-Object TitleId -eq $smt.TitleId)[0]
     Check ($failedRow.CanSelect -and $failedRow.HasPreparationFailure) 'the failed game stays tickable'
@@ -217,7 +218,7 @@ try {
     $folders = @(Get-Folders)
     Check ($folders.Count -eq 1 -and (Get-FolderTitleIds $folders[0]) -eq $smt.TitleId) 'the game to add was copied'
     Check ($script:PendingRemoval -and @($script:PendingRemoval.Items | ForEach-Object TitleId) -contains $omega.TitleId) 'the game to remove is marked'
-    $savedRemoval = Get-ThreeDSManagerState -Name 'pending-removal.json'
+    $savedRemoval = Get-ThreeDSManagerState -Name (Get-CardStateName 'pending-removal')
     Check ($savedRemoval -and $savedRemoval.Status -eq 'Awaiting console removal') 'the removal mark was saved'
     Check (Test-Path -LiteralPath (Join-Path $titles $omega.TitleId.Substring(8))) 'the PC never deletes the installed game itself'
     Check ($script:InlineNotice -match '^Copied 1 game to the SD card; 1 marked for removal') "the notice reports both: '$($script:InlineNotice)'"
@@ -238,7 +239,7 @@ try {
     Invoke-RefreshAll
     Check ($script:LastRemovalConfirmed -eq 'Ridge Racer 3D') "the deleted game is confirmed: '$($script:LastRemovalConfirmed)'"
     Check ((@($script:PendingRemoval.Items | ForEach-Object TitleId) -join ',') -eq $omega.TitleId) 'the other stays marked'
-    Check (@((Get-ThreeDSManagerState -Name 'pending-removal.json').Items).Count -eq 1) 'the remaining mark was saved'
+    Check (@((Get-ThreeDSManagerState -Name (Get-CardStateName 'pending-removal')).Items).Count -eq 1) 'the remaining mark was saved'
 
     # --- Cancel while preparing: finished games are kept, the rest is cancelled ------------
     Reset-Card @()
@@ -273,10 +274,30 @@ try {
     Update-SelectionSummary
     Check ([string]$script:ApplyChanges.Content -eq 'Keep on 3DS' -and $script:ApplyChanges.IsEnabled) "unticking a mark offers to keep it: '$($script:ApplyChanges.Content)'"
     Invoke-ApplyChanges -Keeps @(Get-RemovalChanges -Keep)
-    Check ($null -eq $script:PendingRemoval -and (Get-ThreeDSManagerState -Name 'pending-removal.json').Status -eq 'Cleared') 'the mark is gone and stays gone'
+    Check ($null -eq $script:PendingRemoval -and (Get-ThreeDSManagerState -Name (Get-CardStateName 'pending-removal')).Status -eq 'Cleared') 'the mark is gone and stays gone'
     $omegaRow = @($script:ViewItems | Where-Object TitleId -eq $omega.TitleId)[0]
     Check ($omegaRow.PreparationStatus -eq '' -and -not $omegaRow.IsRemoveChosen -and $omegaRow.CanRemove) 'the game is back to normal'
     Check ($script:InlineNotice -match '^1 game kept on the 3DS' -and $script:NextStepText.Text -notmatch 'delete:') "no delete step remains: '$($script:InlineNotice)'"
+
+    # --- Check for changes finds the card first; with no card it says so in the window -----
+    $script:SdLifecycle = [pscustomobject]@{ ShowsSuccessfulEject=$false; CanUseSd=$false; IsMounted=$false; StatusText='Connect the 3DS SD card. It is found automatically, or choose Check for changes.' }
+    Update-SelectionSummary
+    Check ($script:RefreshAll.IsEnabled) 'Check for changes stays available with no card detected'
+    $script:RefreshRuns = 0; $script:FoundCard = $false
+    function Invoke-RefreshAll { $script:RefreshRuns++ }
+    function Get-RemovableSignature { 'drives-after-check' }
+    function Refresh-SdTargets {
+        if ($script:FoundCard) {
+            $script:SdTargets.ItemsSource = @([pscustomobject]@{ FriendlyDisplay='N3DS'; FreeBytes=[uint64]64GB }); $script:SdTargets.SelectedIndex = 0
+            $script:SdLifecycle = [pscustomobject]@{ ShowsSuccessfulEject=$false; CanUseSd=$true; IsMounted=$true; StatusText='SD detected' }
+        }
+        else { $script:SdTargets.ItemsSource = @(); $script:SdTargets.SelectedIndex = -1 }
+    }
+    Invoke-CheckForChanges
+    Check ($script:RefreshRuns -eq 0 -and $script:InlineNotice -match '^No 3DS SD card found' -and $script:InlineNotice -match 'Connect the 3DS SD card') "no card: it says so in the window and checks nothing ('$($script:InlineNotice)')"
+    $script:FoundCard = $true
+    Invoke-CheckForChanges
+    Check ($script:RefreshRuns -eq 1 -and $script:LastDriveSignature -eq 'drives-after-check') 'with a card: it finds the card, then runs the full check once'
     'ALL CHECKS PASSED'
 }
 finally {

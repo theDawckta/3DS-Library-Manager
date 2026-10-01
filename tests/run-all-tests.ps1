@@ -22,6 +22,7 @@ $selfContained = @(
     'test-batch-return.ps1'
     'test-return-flow.ps1'
     'test-add-to-sd.ps1'
+    'test-multiple-cards.ps1'
     'test-space-chart.ps1'
     'test-guided-workflow.ps1'
     'test-preparation-failures.ps1'

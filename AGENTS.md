@@ -63,6 +63,13 @@ script, launcher, tests, and documentation. It contains no ROMs, keys, or consol
   return, Check for changes) copies whatever is waiting whenever no batch is out to be installed and the
   card has room. Never ask the user to copy games they already chose.
 - The Remove box shows the saved mark, so unticking a marked game and applying undoes the mark.
+- Install batches, waiting games and removal marks are per card, keyed by `Get-ThreeDSCardKey`.
+  That key is a hash of the card's `Nintendo 3DS` ID0/ID1 folder names, never a drive letter or
+  reader identity. Every check binds the inserted card. Every write first asserts that the card in
+  the reader is the one shown (`Assert-SameCard`), because a different card can match the reader,
+  size and drive letter. The last card's key may be remembered for display only.
+- **Check for changes** is the only manual check. It finds the card again and then checks the library
+  and card, and it stays available when no card is detected. Do not add a separate SD re-check control.
 - Never reuse an install-batch name, even after its folder is removed: its private record holds the
   manifests that confirm installs.
 - Test free-space and byte arithmetic with real card-scale values (tens of GB), not only small fixtures.
@@ -87,6 +94,8 @@ script, launcher, tests, and documentation. It contains no ROMs, keys, or consol
 - Desktop removal controls may coordinate only normal console-side uninstall. They must preserve PC source
   and prepared artifacts, never edit `Nintendo 3DS` directly, persist pending intent outside Git, restrict
   the simple workflow to base games, and confirm absence automatically after the SD returns.
+- Show operation progress in the right-hand column, above the SD card. A running job must never add a
+  full-width band or shift the header or game list.
 - Hide and reset completed progress bars when an operation ends; persistent full bars must not occupy the
   idle interface or imply that work is still active.
 - Keep scrollable settings/sidebar card widths stable when an automatic scrollbar appears or disappears;

@@ -25,20 +25,14 @@ Import-Module (Join-Path $PSScriptRoot 'ThreeDSLibrary.Core.psm1') -Force -Disab
     <Style TargetType="TextBox"><Setter Property="Padding" Value="8,5"/></Style>
   </Window.Resources>
   <Grid>
-    <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+    <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
     <Border Grid.Row="0" Background="#172336" Padding="22,17">
       <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
         <StackPanel><TextBlock Text="3DS Game Installer" Foreground="White" FontSize="25" FontWeight="SemiBold"/><TextBlock Text="Choose games, copy them to the SD card, then install them in GodMode9." Foreground="#C8D4E4" FontSize="14" Margin="0,4,0,0"/></StackPanel>
         <TextBlock x:Name="HeaderSdStatus" Grid.Column="1" Text="SD card not checked" Foreground="#C8D4E4" HorizontalAlignment="Right" VerticalAlignment="Center"/>
       </Grid>
     </Border>
-    <Border x:Name="ProgressCard" Grid.Row="1" Margin="18,14,18,0" Style="{StaticResource Card}" Background="#EEF6FF" BorderBrush="#9BC4EE" Visibility="Collapsed">
-      <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="180"/></Grid.ColumnDefinitions>
-        <StackPanel><TextBlock x:Name="ProgressTitle" Text="Ready" FontWeight="SemiBold" FontSize="15" Foreground="#153A5B"/><TextBlock x:Name="ProgressDetail" Text="Connect the SD card and refresh your games." Margin="0,4,12,0" Foreground="#3D5D78" TextTrimming="CharacterEllipsis"/><ProgressBar x:Name="OperationProgress" Height="9" Margin="0,10,12,0" Minimum="0" Maximum="100" Value="0"/></StackPanel>
-        <StackPanel Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right"><TextBlock x:Name="ElapsedText" HorizontalAlignment="Right" Foreground="#3D5D78"/><Button x:Name="CancelOperation" Content="Cancel" Margin="0,8,0,0" Padding="14,5" MinHeight="30" Visibility="Collapsed"/></StackPanel>
-      </Grid>
-    </Border>
-    <Grid Grid.Row="2" Margin="18,14,18,10">
+    <Grid Grid.Row="1" Margin="18,14,18,10">
       <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="380"/></Grid.ColumnDefinitions>
       <Border Grid.Column="0" Style="{StaticResource Card}" Margin="0,0,14,0">
         <Grid><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
@@ -56,20 +50,21 @@ Import-Module (Join-Path $PSScriptRoot 'ThreeDSLibrary.Core.psm1') -Force -Disab
         </Grid>
       </Border>
       <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" HorizontalContentAlignment="Left"><StackPanel Width="350" Margin="0,0,4,0">
-        <Border Style="{StaticResource Card}" Margin="0,0,0,12"><StackPanel><TextBlock Text="SD card" FontSize="17" FontWeight="SemiBold" Foreground="#172336"/><TextBlock x:Name="SdFriendlyStatus" Text="Connect the 3DS SD card, then refresh." TextWrapping="Wrap" Margin="0,7,0,10" Foreground="#5F6B78"/><ComboBox x:Name="SdTargets" DisplayMemberPath="FriendlyDisplay" MinHeight="32"/><Button x:Name="RefreshSd" Content="Check SD card" Margin="0,10,0,0"/><TextBlock x:Name="EjectStateText" Text="SD card unavailable" FontWeight="SemiBold" Foreground="#5F6B78" Margin="0,12,0,5"/><Button x:Name="EjectSd" Content="Safely Eject SD" Style="{StaticResource PrimaryButton}" Margin="0" IsEnabled="False"/></StackPanel></Border>
+        <Border x:Name="ProgressCard" Style="{StaticResource Card}" Margin="0,0,0,12" Background="#EEF6FF" BorderBrush="#9BC4EE" Visibility="Collapsed"><StackPanel><TextBlock x:Name="ProgressTitle" Text="Ready" FontWeight="SemiBold" FontSize="15" Foreground="#153A5B" TextWrapping="Wrap"/><TextBlock x:Name="ProgressDetail" Text="Connect the SD card and refresh your games." Margin="0,4,0,0" MinHeight="36" Foreground="#3D5D78" TextWrapping="Wrap"/><ProgressBar x:Name="OperationProgress" Height="9" Margin="0,10,0,0" Minimum="0" Maximum="100" Value="0"/><Grid Margin="0,10,0,0"><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><TextBlock x:Name="ElapsedText" VerticalAlignment="Center" Foreground="#3D5D78"/><Button x:Name="CancelOperation" Grid.Column="1" Content="Cancel" Padding="14,5" MinHeight="30" Visibility="Collapsed"/></Grid></StackPanel></Border>
+        <Border Style="{StaticResource Card}" Margin="0,0,0,12"><StackPanel><TextBlock Text="SD card" FontSize="17" FontWeight="SemiBold" Foreground="#172336"/><TextBlock x:Name="SdFriendlyStatus" Text="Connect the 3DS SD card, then refresh." TextWrapping="Wrap" Margin="0,7,0,10" Foreground="#5F6B78"/><ComboBox x:Name="SdTargets" DisplayMemberPath="FriendlyDisplay" MinHeight="32"/><TextBlock x:Name="EjectStateText" Text="SD card unavailable" FontWeight="SemiBold" Foreground="#5F6B78" Margin="0,12,0,5"/><Button x:Name="EjectSd" Content="Safely Eject SD" Style="{StaticResource PrimaryButton}" Margin="0" IsEnabled="False"/></StackPanel></Border>
         <Border x:Name="NextStepCard" Style="{StaticResource Card}" Margin="0,0,0,12" Background="#F0F8F3" BorderBrush="#9BC8AA"><StackPanel><TextBlock x:Name="NextStepTitle" Text="Next step" FontSize="17" FontWeight="SemiBold" Foreground="#174A2B"/><TextBlock x:Name="NextStepText" Text="Refresh your games to begin." TextWrapping="Wrap" Margin="0,7,0,10" Foreground="#365D43"/></StackPanel></Border>
         <Border x:Name="SpaceCard" Style="{StaticResource Card}" Margin="0,0,0,12" Visibility="Collapsed"><StackPanel><TextBlock Text="SD card space" FontSize="17" FontWeight="SemiBold" Foreground="#172336"/><TextBlock x:Name="SpaceSummary" TextWrapping="Wrap" Margin="0,4,0,12" Foreground="#5F6B78"/><Grid><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions><Canvas Width="116" Height="116" VerticalAlignment="Center"><Path x:Name="SpaceFreeSlice" Fill="#D5DCE4" Stroke="White" StrokeThickness="1.5"/><Path x:Name="SpaceOtherSlice" Fill="#E0A13A" Stroke="White" StrokeThickness="1.5"/><Path x:Name="SpaceGamesSlice" Fill="#2F7BC0" Stroke="White" StrokeThickness="1.5"/></Canvas><StackPanel Grid.Column="1" Margin="18,0,0,0" VerticalAlignment="Center"><DockPanel Margin="0,0,0,9"><Rectangle Width="12" Height="12" RadiusX="2" RadiusY="2" Fill="#2F7BC0" Margin="0,0,8,0" VerticalAlignment="Center"/><TextBlock x:Name="SpaceGamesText" Foreground="#172336" TextWrapping="Wrap"/></DockPanel><DockPanel Margin="0,0,0,9"><Rectangle Width="12" Height="12" RadiusX="2" RadiusY="2" Fill="#E0A13A" Margin="0,0,8,0" VerticalAlignment="Center"/><TextBlock x:Name="SpaceOtherText" Foreground="#172336" TextWrapping="Wrap"/></DockPanel><DockPanel><Rectangle Width="12" Height="12" RadiusX="2" RadiusY="2" Fill="#D5DCE4" Margin="0,0,8,0" VerticalAlignment="Center"/><TextBlock x:Name="SpaceFreeText" Foreground="#172336" TextWrapping="Wrap"/></DockPanel></StackPanel></Grid></StackPanel></Border>
         <Expander Header="Settings" Margin="2,2,2,8"><StackPanel Margin="8,10,4,4"><TextBlock Text="Where your game files are" FontWeight="SemiBold"/><DockPanel Margin="0,4,0,9"><Button x:Name="BrowseLibrary" DockPanel.Dock="Right" Content="Change"/><TextBox x:Name="LibraryPath" ToolTip="{Binding RelativeSource={RelativeSource Self},Path=Text}"/></DockPanel><TextBlock Text="Working storage for prepared games" FontWeight="SemiBold"/><TextBlock Text="The app manages this folder automatically." Foreground="#5F6B78" FontSize="12"/><DockPanel Margin="0,4,0,9"><Button x:Name="BrowseCache" DockPanel.Dock="Right" Content="Change"/><TextBox x:Name="CachePath" ToolTip="{Binding RelativeSource={RelativeSource Self},Path=Text}"/></DockPanel><StackPanel x:Name="Boot9Panel" Visibility="Collapsed" Margin="0,2,0,8"><TextBlock Text="Encrypted cartridge support" FontWeight="SemiBold"/><TextBlock Text="Only needed when the app finds an encrypted physical-cartridge dump. Leave blank unless the app specifically asks for it." TextWrapping="Wrap" Foreground="#5F6B78" FontSize="12" Margin="0,2,0,4"/><DockPanel><Button x:Name="BrowseBoot9" DockPanel.Dock="Right" Content="Choose file"/><TextBox x:Name="Boot9Path" ToolTip="{Binding RelativeSource={RelativeSource Self},Path=Text}"/></DockPanel></StackPanel><Button x:Name="SetupTools" Content="Set up helper tools" Margin="0,2,0,0"/><Expander Header="Troubleshooting details" Margin="0,9,0,0"><TextBox x:Name="Log" Height="120" IsReadOnly="True" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" FontFamily="Consolas" FontSize="11" Margin="0,7,0,0"/></Expander></StackPanel></Expander>
       </StackPanel></ScrollViewer>
     </Grid>
-    <Border Grid.Row="3" Background="#E8ECF1" Padding="18,8"><TextBlock x:Name="FooterStatus" Text="Ready" Foreground="#44515E"/></Border>
+    <Border Grid.Row="2" Background="#E8ECF1" Padding="18,8"><TextBlock x:Name="FooterStatus" Text="Ready" Foreground="#44515E"/></Border>
   </Grid>
 </Window>
 '@
 
 $reader=New-Object System.Xml.XmlNodeReader $xaml
 $window=[Windows.Markup.XamlReader]::Load($reader)
-$controlNames=@('HeaderSdStatus','ProgressCard','ProgressTitle','ProgressDetail','OperationProgress','ElapsedText','CancelOperation','RefreshAll','SearchBox','GameGrid','SelectionSummary','ApplyChanges','SdFriendlyStatus','SdTargets','RefreshSd','EjectStateText','EjectSd','NextStepCard','NextStepTitle','NextStepText','SpaceCard','SpaceSummary','SpaceGamesSlice','SpaceOtherSlice','SpaceFreeSlice','SpaceGamesText','SpaceOtherText','SpaceFreeText','BrowseLibrary','LibraryPath','BrowseCache','CachePath','Boot9Panel','BrowseBoot9','Boot9Path','SetupTools','Log','FooterStatus')
+$controlNames=@('HeaderSdStatus','ProgressCard','ProgressTitle','ProgressDetail','OperationProgress','ElapsedText','CancelOperation','RefreshAll','SearchBox','GameGrid','SelectionSummary','ApplyChanges','SdFriendlyStatus','SdTargets','EjectStateText','EjectSd','NextStepCard','NextStepTitle','NextStepText','SpaceCard','SpaceSummary','SpaceGamesSlice','SpaceOtherSlice','SpaceFreeSlice','SpaceGamesText','SpaceOtherText','SpaceFreeText','BrowseLibrary','LibraryPath','BrowseCache','CachePath','Boot9Panel','BrowseBoot9','Boot9Path','SetupTools','Log','FooterStatus')
 foreach($name in $controlNames){Set-Variable -Name $name -Value $window.FindName($name) -Scope Script}
 if($ValidateOnly){"GUI XAML validation PASS ($($controlNames.Count) controls)";exit}
 
@@ -88,7 +83,7 @@ if (-not $script:OwnsInstanceMutex) {
 }
 
 $script:RepositoryRoot=Split-Path -Parent $PSScriptRoot
-$script:LibraryItems=@();$script:LibraryCache=@();$script:InstalledItems=@();$script:BatchItems=@();$script:ViewItems=@();$script:SdItems=@();$script:PreparationFailures=@();$script:PendingRemoval=$null;$script:LastRemovalConfirmed='';$script:GuidedInstall=[pscustomobject]@{Backlog=@();ActiveBatchId='';ActiveTitleIds=@();ActiveCount=0;AwaitingReturn=$false;LastReturnMessage=''};$script:Busy=$false;$script:CancelRequested=$false;$script:OperationStarted=$null;$script:LastDriveSignature='';$script:EjectedDeviceInstanceId='';$script:EjectRemovalObserved=$false;$script:Ejecting=$false;$script:SdEnumerationError='';$script:NextStepOwnedByEject=$false;$script:InlineNotice='';$script:SdLifecycle=(Resolve-ThreeDSSdLifecycle -CurrentTargets @() -SelectedTarget $null)
+$script:LibraryItems=@();$script:LibraryCache=@();$script:InstalledItems=@();$script:BatchItems=@();$script:ViewItems=@();$script:SdItems=@();$script:PreparationFailures=@();$script:PendingRemoval=$null;$script:LastRemovalConfirmed='';$script:GuidedInstall=[pscustomobject]@{Backlog=@();ActiveBatchId='';ActiveTitleIds=@();ActiveCount=0;AwaitingReturn=$false;LastReturnMessage=''};$script:CardKey='';$script:Busy=$false;$script:CancelRequested=$false;$script:OperationStarted=$null;$script:LastDriveSignature='';$script:EjectedDeviceInstanceId='';$script:EjectRemovalObserved=$false;$script:Ejecting=$false;$script:SdEnumerationError='';$script:NextStepOwnedByEject=$false;$script:InlineNotice='';$script:SdLifecycle=(Resolve-ThreeDSSdLifecycle -CurrentTargets @() -SelectedTarget $null)
 $script:Timer=New-Object Windows.Threading.DispatcherTimer;$script:Timer.Interval=[TimeSpan]::FromSeconds(1)
 $script:Timer.Add_Tick({if($script:Busy -and $script:OperationStarted){$elapsed=(Get-Date)-$script:OperationStarted;$script:ElapsedText.Text='Working - {0:mm\:ss}' -f $elapsed}});$script:Timer.Start()
 $script:DeviceTimer=New-Object Windows.Threading.DispatcherTimer;$script:DeviceTimer.Interval=[TimeSpan]::FromSeconds(3)
@@ -105,7 +100,7 @@ function Show-Notice([string]$Summary,[string]$Detail=''){
 function Add-Log([string]$Message){$script:Log.AppendText("[$(Get-Date -Format 'HH:mm:ss')] $Message`r`n");$script:Log.ScrollToEnd()}
 function Pump-Ui{$window.Dispatcher.Invoke([action]{},[Windows.Threading.DispatcherPriority]::Background)}
 function Set-Progress([string]$Title,[string]$Detail,[uint64]$Done=0,[uint64]$Total=0){$script:ProgressTitle.Text=$Title;$script:ProgressDetail.Text=$Detail;if($Total -gt 0){$script:OperationProgress.IsIndeterminate=$false;$script:OperationProgress.Value=[Math]::Min(100,[double]$Done/[double]$Total*100);$script:FooterStatus.Text='{0} - {1:N0}%' -f $Title,$script:OperationProgress.Value}else{$script:OperationProgress.IsIndeterminate=$true;$script:FooterStatus.Text=$Title};Pump-Ui;if($script:Busy -and $script:CancelRequested){throw [System.OperationCanceledException]::new('The operation was stopped by the user.') }}
-function Set-Busy([bool]$Busy,[string]$Title='Ready'){$script:Busy=$Busy;if($Busy){$script:InlineNotice='';$script:ProgressCard.Visibility='Visible';$script:CancelRequested=$false;$script:CancelOperation.Visibility='Visible';$script:CancelOperation.IsEnabled=$true;$script:OperationStarted=Get-Date;$script:ElapsedText.Text='Working - 00:00'}else{$script:CancelRequested=$false;$script:CancelOperation.Visibility='Collapsed';$script:OperationStarted=$null;$script:ElapsedText.Text='';$script:OperationProgress.IsIndeterminate=$false;$script:OperationProgress.Value=0;$script:ProgressCard.Visibility='Collapsed'};foreach($control in @($script:RefreshAll,$script:ApplyChanges,$script:RefreshSd,$script:EjectSd,$script:BrowseLibrary,$script:BrowseCache,$script:BrowseBoot9,$script:SetupTools,$script:GameGrid,$script:SearchBox,$script:SdTargets,$script:LibraryPath,$script:CachePath,$script:Boot9Path)){$control.IsEnabled=-not $Busy};Apply-SdLifecycle|Out-Null;Update-SelectionSummary;$script:FooterStatus.Text=$Title;Pump-Ui}
+function Set-Busy([bool]$Busy,[string]$Title='Ready'){$script:Busy=$Busy;if($Busy){$script:InlineNotice='';$script:ProgressCard.Visibility='Visible';$script:CancelRequested=$false;$script:CancelOperation.Visibility='Visible';$script:CancelOperation.IsEnabled=$true;$script:OperationStarted=Get-Date;$script:ElapsedText.Text='Working - 00:00'}else{$script:CancelRequested=$false;$script:CancelOperation.Visibility='Collapsed';$script:OperationStarted=$null;$script:ElapsedText.Text='';$script:OperationProgress.IsIndeterminate=$false;$script:OperationProgress.Value=0;$script:ProgressCard.Visibility='Collapsed'};foreach($control in @($script:RefreshAll,$script:ApplyChanges,$script:EjectSd,$script:BrowseLibrary,$script:BrowseCache,$script:BrowseBoot9,$script:SetupTools,$script:GameGrid,$script:SearchBox,$script:SdTargets,$script:LibraryPath,$script:CachePath,$script:Boot9Path)){$control.IsEnabled=-not $Busy};Apply-SdLifecycle|Out-Null;Update-SelectionSummary;$script:FooterStatus.Text=$Title;Pump-Ui}
 function Show-Error {
     param($ErrorValue,[string]$Game='',[string]$Operation='')
     $exception=if($ErrorValue -is [Management.Automation.ErrorRecord]){$ErrorValue.Exception}elseif($ErrorValue -is [Exception]){$ErrorValue}else{$null}
@@ -133,10 +128,60 @@ function Save-Preferences {
     if (-not $script:LibraryPath.Text -and -not $script:CachePath.Text) { return }
     Save-ThreeDSManagerState -Name 'preferences.json' -Value ([pscustomobject]@{
         SavedAt=(Get-Date).ToString('o'); LibraryRoot=$script:LibraryPath.Text
-        InstallReadyRoot=$script:CachePath.Text; Boot9Path=$script:Boot9Path.Text
+        InstallReadyRoot=$script:CachePath.Text; Boot9Path=$script:Boot9Path.Text; LastCardKey=$script:CardKey
     }) | Out-Null
 }
-function Save-GuidedInstallState { Save-ThreeDSManagerState -Name 'guided-install.json' -Value $script:GuidedInstall | Out-Null }
+function Get-CardStateName([string]$Base){if(-not $script:CardKey){throw 'No SD card has been checked yet. Choose Check for changes first.'};"$Base-$($script:CardKey).json"}
+function New-GuidedInstallState{[pscustomobject]@{Backlog=@();ActiveBatchId='';ActiveTitleIds=@();ActiveCount=0;AwaitingReturn=$false;LastReturnMessage=''}}
+function Save-GuidedInstallState { Save-ThreeDSManagerState -Name (Get-CardStateName 'guided-install') -Value $script:GuidedInstall | Out-Null }
+function Use-CardState {
+    # Batches, waiting games and removal marks belong to one card, kept under that card's key.
+    # Every check binds the inserted card, so swapping cards swaps records and nothing crosses over.
+    param([Parameter(Mandatory)]$Target)
+    $key=Get-ThreeDSCardKey -SdRoot $Target.Root
+    if($key -eq $script:CardKey){return}
+    $switching=[bool]$script:CardKey
+    $script:CardKey=$key
+    Import-LegacyCardState -Target $Target
+    Use-CardKey $key
+    Save-Preferences
+    if($switching){Add-Log 'A different SD card is in the reader; showing its own install queue and removal marks.'}
+}
+function Use-CardKey([string]$Key) {
+    # Loads one card's records.  At startup this shows the last card checked while it is out in the
+    # 3DS; every write still checks the card actually in the reader (Assert-SameCard).
+    $script:CardKey=$Key
+    $guided=Get-ThreeDSManagerState -Name (Get-CardStateName 'guided-install')
+    $script:GuidedInstall=if($guided){$guided}else{New-GuidedInstallState}
+    $removal=Get-ThreeDSManagerState -Name (Get-CardStateName 'pending-removal')
+    $script:PendingRemoval=if($removal -and $removal.Status -eq 'Awaiting console removal'){$removal}else{$null}
+    $script:LastRemovalConfirmed='';$script:InstalledItems=@();$script:BatchItems=@()
+}
+function Import-LegacyCardState {
+    # Before records were kept per card, one record served whichever card was inserted.  The first
+    # card it can belong to adopts it: the card holding its install folder, or any card when no batch
+    # was out.  Adopting moves the files, so no other card can claim them afterwards.
+    param([Parameter(Mandatory)]$Target)
+    $dataRoot=Get-ThreeDSManagerDataRoot
+    $legacyGuided=Join-Path $dataRoot 'guided-install.json'
+    $adopted=$false
+    if(Test-Path -LiteralPath $legacyGuided){
+        $legacy=Get-ThreeDSManagerState -Name 'guided-install.json'
+        $active=if($legacy -and $legacy.PSObject.Properties['ActiveBatchId']){[string]$legacy.ActiveBatchId}else{''}
+        $belongs=(-not $active) -or (Test-Path -LiteralPath (Join-Path $Target.Root "cias\InstallQueue\$active") -PathType Container)
+        $own=Join-Path $dataRoot (Get-CardStateName 'guided-install')
+        if($belongs -and -not (Test-Path -LiteralPath $own)){Move-Item -LiteralPath $legacyGuided -Destination $own;$adopted=$true;Add-Log 'This SD card took over the saved install queue.'}
+    }
+    $legacyRemoval=Join-Path $dataRoot 'pending-removal.json'
+    $ownRemoval=Join-Path $dataRoot (Get-CardStateName 'pending-removal')
+    if((Test-Path -LiteralPath $legacyRemoval) -and ($adopted -or -not (Test-Path -LiteralPath $legacyGuided)) -and -not (Test-Path -LiteralPath $ownRemoval)){Move-Item -LiteralPath $legacyRemoval -Destination $ownRemoval}
+}
+function Assert-SameCard($Target) {
+    # A different card can sit in the same reader with the same size, so writes also check that the
+    # card is the one whose records and game list are on screen.
+    $key=Get-ThreeDSCardKey -SdRoot $Target.Root
+    if(-not $script:CardKey -or $key -ne $script:CardKey){throw 'The SD card in the reader is not the one shown. Choose Check for changes first. No files were changed.'}
+}
 function Add-GuidedBacklog([object[]]$Artifacts) {
     $byId=@{}
     foreach($item in @($script:GuidedInstall.Backlog)+@($Artifacts)){if($item.TitleId){$byId[([string]$item.TitleId).ToUpperInvariant()]=$item}}
@@ -308,7 +353,8 @@ function Update-SelectionSummary {
     elseif ($keeps.Count) { 'Keep on 3DS' }
     else { 'Apply changes' }
     $hasSd = [bool]$script:SdLifecycle.CanUseSd
-    $script:RefreshAll.IsEnabled = (-not $script:Busy -and $hasSd)
+    # Check for changes also finds the card, so it stays available when none is detected.
+    $script:RefreshAll.IsEnabled = (-not $script:Busy)
     $script:ApplyChanges.IsEnabled = (-not $script:Busy -and $hasSd -and $actions.Count -gt 0)
 }
 function Get-RemovalChanges {
@@ -440,11 +486,11 @@ function Resolve-PendingRemoval {
     Add-Log "Console removal confirmed for: $names"
     if ($remaining.Count) {
         $script:PendingRemoval=[pscustomobject]@{CreatedAt=$script:PendingRemoval.CreatedAt;Status='Awaiting console removal';Items=$remaining}
-        Save-ThreeDSManagerState -Name 'pending-removal.json' -Value $script:PendingRemoval|Out-Null
+        Save-ThreeDSManagerState -Name (Get-CardStateName 'pending-removal') -Value $script:PendingRemoval|Out-Null
         return
     }
     $completed=[pscustomobject]@{CreatedAt=$script:PendingRemoval.CreatedAt;ConfirmedAt=(Get-Date).ToString('o');Status='Removal confirmed';Items=@($script:PendingRemoval.Items)}
-    Save-ThreeDSManagerState -Name 'pending-removal.json' -Value $completed|Out-Null
+    Save-ThreeDSManagerState -Name (Get-CardStateName 'pending-removal') -Value $completed|Out-Null
     $script:PendingRemoval=$null
 }
 
@@ -500,7 +546,7 @@ function Add-PendingRemoval([object[]]$Views) {
     $created=if($script:PendingRemoval){$script:PendingRemoval.CreatedAt}else{(Get-Date).ToString('o')}
     $script:PendingRemoval=[pscustomobject]@{CreatedAt=$created;Status='Awaiting console removal';Items=@($byId.Values)}
     $script:LastRemovalConfirmed=''
-    Save-ThreeDSManagerState -Name 'pending-removal.json' -Value $script:PendingRemoval|Out-Null
+    Save-ThreeDSManagerState -Name (Get-CardStateName 'pending-removal') -Value $script:PendingRemoval|Out-Null
 }
 function Clear-RemovalMark([object[]]$Views) {
     # Undoes marks the user unticked; the console was never asked to change anything.
@@ -508,10 +554,23 @@ function Clear-RemovalMark([object[]]$Views) {
     $keepIds=@($Views|ForEach-Object{[string]$_.TitleId})
     $remaining=@($script:PendingRemoval.Items|Where-Object{[string]$_.TitleId -notin $keepIds})
     $script:PendingRemoval=if($remaining.Count){[pscustomobject]@{CreatedAt=$script:PendingRemoval.CreatedAt;Status='Awaiting console removal';Items=$remaining}}else{$null}
-    Save-ThreeDSManagerState -Name 'pending-removal.json' -Value $(if($script:PendingRemoval){$script:PendingRemoval}else{[pscustomobject]@{Status='Cleared';ClearedAt=(Get-Date).ToString('o');Items=@()}})|Out-Null
+    Save-ThreeDSManagerState -Name (Get-CardStateName 'pending-removal') -Value $(if($script:PendingRemoval){$script:PendingRemoval}else{[pscustomobject]@{Status='Cleared';ClearedAt=(Get-Date).ToString('o');Items=@()}})|Out-Null
 }
 
-function Invoke-RefreshAll{try{Set-Busy $true 'Checking for changes';Save-Preferences;$tools=Get-ThreeDSToolchain;if(-not $tools.Ready){throw 'Helper tools are not ready. Open Settings and choose Set up helper tools.'};$libraryRoot=Assert-ThreeDSExternalDataPath -Path $script:LibraryPath.Text -RepositoryRoot $script:RepositoryRoot;$target=Get-SelectedTarget -AllowUnhealthyVolume;Set-Progress 'Checking your game library' 'Comparing files with the saved library index...' 0 0;$scanProgress={param($position,$count,$name,$done,$total,$phase);$detail=if($phase -eq 'Reused'){"Game $position of $count unchanged - $name"}elseif($total){"Game $position of $count - $name - $([Math]::Round($done/1MB)) / $([Math]::Round($total/1MB)) MiB"}else{"Game $position of $count - $name"};Set-Progress 'Checking your game library' $detail $done $total};$script:LibraryItems=@(Get-ThreeDSLibraryInventory -LibraryRoot $libraryRoot -CtrToolPath $tools.CtrToolPath -ProgressAction $scanProgress -CachedItems $script:LibraryCache);$script:LibraryCache=@($script:LibraryItems);$duplicates=@($script:LibraryItems|Where-Object TitleId|Group-Object TitleId|Where-Object Count -gt 1);if($duplicates.Count){throw 'The library contains more than one source for the same game. Resolve duplicates before continuing.'};Save-ThreeDSManagerState -Name 'library-index.json' -Value $script:LibraryItems|Out-Null;$sdProgress={param($message,$done,$total)Set-Progress 'Checking the SD card' $message $done $total};Set-Progress 'Checking the SD card' 'Reading install-set manifests and installed-title metadata...' 0 0;Read-SmartSdState -Target $target -ProgressAction $sdProgress;Resolve-PendingRemoval;Build-ViewItems;$reused=@($script:LibraryItems|Where-Object CacheState -eq 'Reused').Count;$scanned=$script:LibraryItems.Count-$reused;Set-Progress 'Up to date' "$($script:ViewItems.Count) games found; $reused unchanged, $scanned new or changed." 100 100;Add-Log "Smart refresh complete: $($script:ViewItems.Count) games ($reused reused, $scanned rescanned), $($script:InstalledItems.Count) installed entries, $($script:BatchItems.Count) batches.";$returned=[string]$script:GuidedInstall.LastReturnMessage;$queue=Copy-WaitingGames;if($queue){Show-Notice "Copied $($queue.ItemCount) waiting game$(if($queue.ItemCount -ne 1){'s'}) to the SD card" $(if($returned){"$returned."}else{''})}}catch{Show-Error $_}finally{Set-Busy $false 'Ready'}}
+function Invoke-CheckForChanges {
+    # The one manual check: find the card again, then check the library and the card.
+    # Automatic detection does the same whenever a removable drive comes or goes.
+    if($script:Busy){return}
+    try{Refresh-SdTargets}catch{Show-Error $_;return}
+    if(-not $script:SdTargets.SelectedItem -or -not $script:SdLifecycle.CanUseSd){
+        Show-Notice 'No 3DS SD card found' ([string]$script:SdLifecycle.StatusText)
+        return
+    }
+    # Already handled here, so the automatic check does not run it a second time.
+    $script:LastDriveSignature=Get-RemovableSignature
+    Invoke-RefreshAll
+}
+function Invoke-RefreshAll{try{Set-Busy $true 'Checking for changes';Save-Preferences;$tools=Get-ThreeDSToolchain;if(-not $tools.Ready){throw 'Helper tools are not ready. Open Settings and choose Set up helper tools.'};$libraryRoot=Assert-ThreeDSExternalDataPath -Path $script:LibraryPath.Text -RepositoryRoot $script:RepositoryRoot;$target=Get-SelectedTarget -AllowUnhealthyVolume;Use-CardState -Target $target;Set-Progress 'Checking your game library' 'Comparing files with the saved library index...' 0 0;$scanProgress={param($position,$count,$name,$done,$total,$phase);$detail=if($phase -eq 'Reused'){"Game $position of $count unchanged - $name"}elseif($total){"Game $position of $count - $name - $([Math]::Round($done/1MB)) / $([Math]::Round($total/1MB)) MiB"}else{"Game $position of $count - $name"};Set-Progress 'Checking your game library' $detail $done $total};$script:LibraryItems=@(Get-ThreeDSLibraryInventory -LibraryRoot $libraryRoot -CtrToolPath $tools.CtrToolPath -ProgressAction $scanProgress -CachedItems $script:LibraryCache);$script:LibraryCache=@($script:LibraryItems);$duplicates=@($script:LibraryItems|Where-Object TitleId|Group-Object TitleId|Where-Object Count -gt 1);if($duplicates.Count){throw 'The library contains more than one source for the same game. Resolve duplicates before continuing.'};Save-ThreeDSManagerState -Name 'library-index.json' -Value $script:LibraryItems|Out-Null;$sdProgress={param($message,$done,$total)Set-Progress 'Checking the SD card' $message $done $total};Set-Progress 'Checking the SD card' 'Reading install-set manifests and installed-title metadata...' 0 0;Read-SmartSdState -Target $target -ProgressAction $sdProgress;Resolve-PendingRemoval;Build-ViewItems;$reused=@($script:LibraryItems|Where-Object CacheState -eq 'Reused').Count;$scanned=$script:LibraryItems.Count-$reused;Set-Progress 'Up to date' "$($script:ViewItems.Count) games found; $reused unchanged, $scanned new or changed." 100 100;Add-Log "Smart refresh complete: $($script:ViewItems.Count) games ($reused reused, $scanned rescanned), $($script:InstalledItems.Count) installed entries, $($script:BatchItems.Count) batches.";$returned=[string]$script:GuidedInstall.LastReturnMessage;$queue=Copy-WaitingGames;if($queue){Show-Notice "Copied $($queue.ItemCount) waiting game$(if($queue.ItemCount -ne 1){'s'}) to the SD card" $(if($returned){"$returned."}else{''})}}catch{Show-Error $_}finally{Set-Busy $false 'Ready'}}
 function Invoke-ApplyChanges {
     # Applies every tick in one run: removals are marked first, then the games to add are
     # prepared and copied.  Once it starts, Stop is the only control.  Each finished step
@@ -521,11 +580,11 @@ function Invoke-ApplyChanges {
     $done=[pscustomobject]@{Marked=0;Kept=0;Prepared=0;BatchBefore=[string]$script:GuidedInstall.ActiveBatchId}
     try {
         if (-not ($Adds.Count + $Removals.Count + $Keeps.Count)) { throw 'Tick games to add or remove first.' }
+        # The ticks describe the card on screen, so that card must be the one in the reader before
+        # they are judged.  Preparation writes nothing to the SD, so a dirty flag is not a blocker.
+        Assert-SameCard (Get-SelectedTarget -AllowUnhealthyVolume)
         if (@($Adds|Where-Object{-not $_.CanSelect}).Count) { throw 'One game ticked to add is no longer eligible. Check for changes and review again.' }
         if (@($Removals|Where-Object{-not $_.CanRemove}).Count) { throw 'One game ticked to remove is no longer eligible. Check for changes first.' }
-        # Preparation converts and validates on the PC and writes nothing to the SD,
-        # so it only needs the card identified, not a cleared dirty flag.
-        Get-SelectedTarget -AllowUnhealthyVolume|Out-Null
         Set-Busy $true 'Applying changes'
         if ($Keeps.Count) {
             Clear-RemovalMark $Keeps
@@ -644,15 +703,17 @@ function Copy-WaitingGames {
     # Runs inside an operation that is already busy.  Returns the new batch or $null.
     if($script:GuidedInstall.ActiveBatchId -or -not @($script:GuidedInstall.Backlog).Count){return $null}
     # The plan uses the card's live free space, not the value from the last enumeration.
-    Copy-GuidedQueue -Target (Get-SelectedTarget -AllowUnhealthyVolume)
+    $target=Get-SelectedTarget -AllowUnhealthyVolume
+    Assert-SameCard $target
+    Copy-GuidedQueue -Target $target
 }
 function Invoke-ApplySelected {
     $script:GameGrid.CommitEdit()|Out-Null
     Invoke-ApplyChanges -Adds @($script:ViewItems|Where-Object IsChosen) -Removals @(Get-RemovalChanges -Mark) -Keeps @(Get-RemovalChanges -Keep)
 }
 $script:CancelOperation.Add_Click({if($script:Busy -and -not $script:CancelRequested){$script:CancelRequested=$true;$script:CancelOperation.IsEnabled=$false;$script:ProgressTitle.Text='Cancelling...';$script:ProgressDetail.Text='Keeping what has finished and removing the partial files of the step in progress.';$script:OperationProgress.IsIndeterminate=$true;$script:FooterStatus.Text='Cancelling...'}})
-$script:RefreshSd.Add_Click({try{Refresh-SdTargets}catch{Show-Error $_}});$script:EjectSd.Add_Click({Invoke-SafeEject});$script:SdTargets.Add_SelectionChanged({Apply-SdLifecycle|Out-Null;Update-SelectionSummary});$script:RefreshAll.Add_Click({Invoke-RefreshAll});$script:ApplyChanges.Add_Click({Invoke-ApplySelected});$script:SearchBox.Add_TextChanged({Apply-Filter});$script:GameGrid.Add_CurrentCellChanged({Update-SelectionSummary});$script:GameGrid.Add_CellEditEnding({$window.Dispatcher.BeginInvoke([action]{Update-SelectionSummary})|Out-Null})
+$script:EjectSd.Add_Click({Invoke-SafeEject});$script:SdTargets.Add_SelectionChanged({Apply-SdLifecycle|Out-Null;Update-SelectionSummary});$script:RefreshAll.Add_Click({Invoke-CheckForChanges});$script:ApplyChanges.Add_Click({Invoke-ApplySelected});$script:SearchBox.Add_TextChanged({Apply-Filter});$script:GameGrid.Add_CurrentCellChanged({Update-SelectionSummary});$script:GameGrid.Add_CellEditEnding({$window.Dispatcher.BeginInvoke([action]{Update-SelectionSummary})|Out-Null})
 $script:BrowseLibrary.Add_Click({$path=Select-Folder $script:LibraryPath.Text;if($path){$script:LibraryPath.Text=$path;Save-Preferences}});$script:BrowseCache.Add_Click({$path=Select-Folder $script:CachePath.Text;if($path){$script:CachePath.Text=$path;Save-Preferences}});$script:BrowseBoot9.Add_Click({$dialog=New-Object Microsoft.Win32.OpenFileDialog;$dialog.Filter='boot9 file|boot9.bin|All files|*.*';if($dialog.ShowDialog()){$script:Boot9Path.Text=$dialog.FileName}})
 $script:SetupTools.Add_Click({try{Set-Busy $true 'Setting up helper tools';Set-Progress 'Setting up helper tools' 'Downloading and verifying pinned tools...' 0 0;& (Join-Path $PSScriptRoot 'setup-library-tools.ps1');$script:SetupTools.Visibility='Collapsed'}catch{Show-Error $_}finally{Set-Busy $false 'Ready'}})
-$window.Add_Loaded({$staleCount=Remove-StaleManagerWork;if($staleCount){Add-Log "Removed $staleCount stale disposable work folder(s)."};$preferences=Get-ThreeDSManagerState -Name 'preferences.json';if($preferences){$script:LibraryPath.Text=[string]$preferences.LibraryRoot;$script:CachePath.Text=[string]$preferences.InstallReadyRoot;if($preferences.PSObject.Properties['Boot9Path']){$script:Boot9Path.Text=[string]$preferences.Boot9Path}};$guided=Get-ThreeDSManagerState -Name 'guided-install.json';if($guided){$script:GuidedInstall=$guided};$savedIndex=Get-ThreeDSManagerState -Name 'library-index.json';if($savedIndex){$script:LibraryCache=@($savedIndex|ForEach-Object{$_})};$savedFailures=Get-ThreeDSManagerState -Name 'preparation-failures.json';if($savedFailures){$failureValues=if($savedFailures.PSObject.Properties['Failures']){$savedFailures.Failures}else{$savedFailures};$script:PreparationFailures=@($failureValues|ForEach-Object{$_})};$pendingRemoval=Get-ThreeDSManagerState -Name 'pending-removal.json';if($pendingRemoval -and $pendingRemoval.Status -eq 'Awaiting console removal'){$script:PendingRemoval=$pendingRemoval};$tools=Get-ThreeDSToolchain;if($tools.Ready){$script:SetupTools.Visibility='Collapsed'};try{Refresh-SdTargets;$script:LastDriveSignature=Get-RemovableSignature;if($script:SdTargets.SelectedItem -and $tools.Ready -and $script:LibraryPath.Text -and $script:CachePath.Text){$window.Dispatcher.BeginInvoke([action]{Invoke-RefreshAll})|Out-Null}else{Set-Progress 'Waiting for the SD card' 'Connect the 3DS SD card; the game list will update automatically.' 0 0}}catch{Show-Error $_};$script:DeviceTimer.Start();Add-Log "Private manager state: $(Get-ThreeDSManagerDataRoot)"})
+$window.Add_Loaded({$staleCount=Remove-StaleManagerWork;if($staleCount){Add-Log "Removed $staleCount stale disposable work folder(s)."};$preferences=Get-ThreeDSManagerState -Name 'preferences.json';if($preferences){$script:LibraryPath.Text=[string]$preferences.LibraryRoot;$script:CachePath.Text=[string]$preferences.InstallReadyRoot;if($preferences.PSObject.Properties['Boot9Path']){$script:Boot9Path.Text=[string]$preferences.Boot9Path};if($preferences.PSObject.Properties['LastCardKey'] -and [string]$preferences.LastCardKey -match '^[0-9A-F]{16}$'){Use-CardKey ([string]$preferences.LastCardKey)}};$savedIndex=Get-ThreeDSManagerState -Name 'library-index.json';if($savedIndex){$script:LibraryCache=@($savedIndex|ForEach-Object{$_})};$savedFailures=Get-ThreeDSManagerState -Name 'preparation-failures.json';if($savedFailures){$failureValues=if($savedFailures.PSObject.Properties['Failures']){$savedFailures.Failures}else{$savedFailures};$script:PreparationFailures=@($failureValues|ForEach-Object{$_})};$tools=Get-ThreeDSToolchain;if($tools.Ready){$script:SetupTools.Visibility='Collapsed'};try{Refresh-SdTargets;$script:LastDriveSignature=Get-RemovableSignature;if($script:SdTargets.SelectedItem -and $tools.Ready -and $script:LibraryPath.Text -and $script:CachePath.Text){$window.Dispatcher.BeginInvoke([action]{Invoke-RefreshAll})|Out-Null}else{Set-Progress 'Waiting for the SD card' 'Connect the 3DS SD card; the game list will update automatically.' 0 0}}catch{Show-Error $_};$script:DeviceTimer.Start();Add-Log "Private manager state: $(Get-ThreeDSManagerDataRoot)"})
 $window.Add_Closing({param($sender,$eventArgs);if($script:Busy){$eventArgs.Cancel=$true;[Windows.MessageBox]::Show($window,'A game operation is still running. Wait for it to finish before closing the app.','3DS Game Installer','OK','Warning')|Out-Null;return};Save-Preferences;$script:Timer.Stop();$script:DeviceTimer.Stop();if($script:OwnsInstanceMutex){$script:InstanceMutex.ReleaseMutex();$script:OwnsInstanceMutex=$false};$script:InstanceMutex.Dispose()});[void]$window.ShowDialog()

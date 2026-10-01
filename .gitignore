@@ -74,6 +74,8 @@ last-install-queue.json
 last-gm9-import.json
 removal-plan.json
 pending-removal.json
+pending-removal-*.json
+guided-install*.json
 preferences.json
 preparation-failures.json
 install-batch-*.json

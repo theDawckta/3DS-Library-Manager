@@ -68,12 +68,13 @@ try {
 
     # --- The manager's own functions and controls --------------------------------------
     $ast = [System.Management.Automation.Language.Parser]::ParseFile((Join-Path $repo 'scripts\library-manager.ps1'), [ref]$null, [ref]$null)
-    foreach ($name in 'Read-SmartSdState','Complete-GuidedReturn','Get-GuidedInstallPlan','Add-GuidedBacklog','Save-GuidedInstallState','Build-ViewItems','Update-SdSpace','New-PieSliceGeometry','Format-SpaceSize','Update-NextStep','Update-SelectionSummary','Get-RemovalChanges','Apply-Filter','Get-FriendlyTitle') {
+    foreach ($name in 'Get-CardStateName','New-GuidedInstallState','Read-SmartSdState','Complete-GuidedReturn','Get-GuidedInstallPlan','Add-GuidedBacklog','Save-GuidedInstallState','Build-ViewItems','Update-SdSpace','New-PieSliceGeometry','Format-SpaceSize','Update-NextStep','Update-SelectionSummary','Get-RemovalChanges','Apply-Filter','Get-FriendlyTitle') {
         $fn = $ast.Find({ param($n) $n -is [System.Management.Automation.Language.FunctionDefinitionAst] -and $n.Name -eq $name }, $true)
         if (-not $fn) { throw "$name not found in the manager." }
         . ([scriptblock]::Create($fn.Extent.Text))
     }
     $script:Logged = New-Object System.Collections.ArrayList
+    $script:CardKey = Get-ThreeDSCardKey -SdRoot $card      # the card this screen shows
     function Add-Log([string]$Message) { [void]$script:Logged.Add($Message) }
     foreach ($n in 'NextStepTitle','NextStepText','SelectionSummary') { Set-Variable -Scope Script -Name $n -Value (New-Object Windows.Controls.TextBlock) }
     foreach ($n in 'RefreshAll','ApplyChanges') { Set-Variable -Scope Script -Name $n -Value (New-Object Windows.Controls.Button) }
@@ -105,7 +106,7 @@ try {
     Check (@($script:InstalledItems | Where-Object { $_.TitleId -eq $a.TitleId -and $_.State -eq 'Installed + healthy' }).Count -eq 1) 'Hyrule Warriors is healthy by manifest match'
     Check (@($script:BatchItems).Count -eq 0) 'no install folder is left in view'
     Check (Test-Path -LiteralPath (Join-Path $titles '0017EA00\content\00000000.app')) 'installed games were not touched'
-    $saved = Get-ThreeDSManagerState -Name 'guided-install.json'
+    $saved = Get-ThreeDSManagerState -Name (Get-CardStateName 'guided-install')
     Check ($saved -and [string]$saved.ActiveBatchId -eq '' -and @($saved.Backlog).Count -eq 1) 'the new state was saved'
 
     # --- The game list and the Next step card --------------------------------------------

@@ -88,6 +88,24 @@ A batch name is never reused, even after its folder is removed. The private reco
 the validated manifests that confirm its games are installed. The next batch is often copied in the
 same second the returned folder is removed, so a repeated name gets a short unique suffix.
 
+## More than one SD card
+
+Each card keeps its own install batch, waiting games and removal marks. The app tells cards apart by
+the two ID folder names inside the card's `Nintendo 3DS` folder. Those names come from the specific
+console and card, so the same card is recognised in any reader or drive letter, and a card from
+another console never matches. Only a one-way hash of them is stored.
+
+- **Switching cards:** every check, including when a card is inserted, switches the screen to that
+  card's own records.
+- **Nothing crosses over:** a batch copied to one card is never reported as returned from another.
+  Games chosen for one card are never copied to another, and a removal is confirmed only on the card
+  whose console did it.
+- **Stale screen:** if a different card is put in the reader before it has been checked, the action
+  button and the copy step refuse with "not the one shown". Choose **Check for changes** first.
+- **Two cards connected at once:** pick one in the SD card list.
+- **While a card is out:** the app remembers the last card checked, so its batch and steps stay visible
+  while it is in the 3DS. This is for display only; every write checks the card actually in the reader.
+
 ## Safety model
 
 - ROMs, generated CIAs, keys, exports, and manager state stay outside Git.
@@ -185,8 +203,9 @@ scrolls vertically, and full folder paths remain available as tooltips.
 
 1. Put `.3ds`, `.cci`, or `.cia` files of games you own in your game-library folder. Choose that folder
    once in **Settings**; the app remembers it.
-2. Connect the powered-off console's SD card. The game list updates automatically. **Check for changes**
-   is available if an immediate manual check is wanted; unchanged ROMs are not re-hashed.
+2. Connect the powered-off console's SD card. The app finds it and updates the game list automatically.
+   **Check for changes** does the same on demand: it finds the card again, then checks the library and
+   the card. Unchanged ROMs are not re-hashed.
 3. Tick **Add** for games showing **Playable now? No**, and **Remove** for installed games to delete.
 4. Select the one action button. Its label names what it will do, for example **Add to SD card**,
    **Remove from 3DS**, or **Add 2, remove 1**. Removals are marked first. Then the manager validates

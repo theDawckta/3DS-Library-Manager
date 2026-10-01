@@ -13,6 +13,8 @@ what installed and cleans up after itself.
 - **The card is cleaned up for you.** When the card returns, games that installed are confirmed
   against the files the app prepared. The install folder is removed, and anything that didn't install
   is copied again.
+- **More than one SD card is fine.** Each card keeps its own queue and removal list, recognised by the
+  card itself, so swapping cards (or 3DS systems) never mixes them up.
 - **Cancel keeps finished work.** While a job runs, Cancel is the only control. Anything already
   finished is kept, and only the step in progress is undone.
 - **It doesn't touch console data.** The app never edits the console's encrypted `Nintendo 3DS` folder.
@@ -73,6 +75,21 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\tests\run-all-tests.ps
 The tests use synthetic cards and games, run against a throwaway state folder, and don't need a real
 SD card. Optional real-file conversion checks run when you pass `-CtrToolPath`, `-Test3dsPath` and
 `-TestCiaPath`.
+
+## Credits
+
+This app is built on other people's work. None of their code is included in this repository: the setup
+step downloads the two conversion tools from their official sources onto your PC.
+
+- **CTRTool**, from [Project_CTR](https://github.com/3DSGuy/Project_CTR) by 3DSGuy and contributors,
+  reads and checks 3DS game files. The app uses its official v1.3.0 release.
+- **[3dsconv](https://github.com/ihaveamac/3dsconv)** by ihaveamac (MIT) converts `.3ds`/`.cci` dumps
+  to CIA. The app uses a pinned commit.
+- **[pyaes](https://github.com/ricmoo/pyaes)** by Richard Moore (MIT) is the AES library 3dsconv uses.
+- **[GodMode9](https://github.com/d0k3/GodMode9)** by d0k3 and contributors (GPL-3.0) installs the
+  games on the console. It isn't included; set it up with the guide below.
+- **[3ds.hacks.guide](https://3ds.hacks.guide/)** ([source](https://github.com/hacks-guide/Guide_3DS),
+  MIT) is the custom firmware and SD card guide this app relies on.
 
 ## License
 

@@ -154,7 +154,7 @@ function Assert-ThreeDSSafeTarget {
     $matches = @(Get-ThreeDSSafeVolumes | Where-Object {
         $_.DiskNumber -eq $DiskNumber -and $_.DriveLetter -eq $ExpectedDriveLetter
     })
-    if ($matches.Count -ne 1) { throw 'Windows temporarily lost the selected SD volume. Wait a moment, choose Check SD card, and retry. No files were changed.' }
+    if ($matches.Count -ne 1) { throw 'Windows temporarily lost the selected SD volume. Wait a moment, then choose Check for changes and try again. No files were changed.' }
     $target = $matches[0]
     if ($target.DiskCapacityBytes -ne $ExpectedDiskCapacityBytes) { throw 'The selected disk capacity changed.' }
     if ($target.IsBoot -or $target.IsSystem) { throw 'Refusing to use a boot or system disk.' }
@@ -331,7 +331,7 @@ function Invoke-ThreeDSSafeEject {
     if (-not $removalConfirmed) {
         return [pscustomobject]@{
             Success=$true; RemovalConfirmed=$false; State='SD state uncertain'
-            Message='Windows accepted the eject request but still reports the SD card as connected. Do not pull the card yet; choose Check SD card and try again.'
+            Message='Windows accepted the eject request but still reports the SD card as connected. Do not pull the card yet; choose Check for changes and try again.'
             Target=$target; NativeResult=$native
         }
     }
@@ -507,7 +507,7 @@ function Resolve-ThreeDSSdLifecycle {
                     $detail = if ($targets.Count -gt 1) {
                         "$($targets.Count) 3DS SD cards are connected. Choose the card to use from the SD card list."
                     }
-                    else { 'A card is connected but has not been positively reidentified yet. Choose Check SD card.' }
+                    else { 'A card is connected but has not been positively reidentified yet. Choose Check for changes.' }
                 }
                 else {
                     $target = $matched[0]
@@ -534,7 +534,7 @@ function Resolve-ThreeDSSdLifecycle {
     $canEject = ($state -eq 'Mounted + idle')
     $unhealthyVolume = [bool]($target -and [string]$target.VolumeHealthStatus -and
         [string]$target.VolumeHealthStatus -ne 'Healthy')
-    # Several 3DS cards need the user's choice; Check SD card cannot resolve that.
+    # Several 3DS cards need the user's choice; Check for changes cannot resolve that.
     $awaitingChoice = ($state -eq 'Reinserted - identifying' -and $targets.Count -gt 1)
 
     $ejectStateText = switch ($state) {
@@ -569,8 +569,8 @@ function Resolve-ThreeDSSdLifecycle {
         'Mounted + busy'           { "$($target.VolumeLabel) on $($target.DriveLetter) is in use. Wait for the current operation to finish." }
         'Ejecting'                 { 'Asking Windows to safely remove the verified SD card...' }
         'Safe to remove SD card'   { 'Safe to remove the SD card. It must be physically removed and reinserted before this app will use it again.' }
-        'No SD card detected'      { 'Connect the 3DS SD card, then choose Check SD card.' }
-        'Reinserted - identifying' { if ($awaitingChoice) { $detail } else { 'A card is connected. Choose Check SD card to reidentify it before any SD action.' } }
+        'No SD card detected'      { 'Connect the 3DS SD card. It is found automatically, or choose Check for changes.' }
+        'Reinserted - identifying' { if ($awaitingChoice) { $detail } else { 'A card is connected. Choose Check for changes to identify it before any SD action.' } }
         default                    { $detail }
     }
 
@@ -600,6 +600,26 @@ function Get-ThreeDSProfileRoot {
         Where-Object Name -Match '^[0-9a-fA-F]{32}$')
     if ($id1.Count -ne 1) { throw "Expected one normal ID1; found $($id1.Count)." }
     $id1[0].FullName
+}
+
+function Get-ThreeDSCardKey {
+    <#
+        A stable key for one SD card as used by one console: its Nintendo 3DS profile folder
+        names (ID0 comes from the console, ID1 from the card).  It is hashed, so no console
+        identifier is stored, and it is a safe state-filename key.  The same card keeps its key
+        across readers, drive letters and sessions; a different card or console gets another.
+    #>
+    [CmdletBinding()]
+    param([Parameter(Mandatory)] [string]$SdRoot)
+    $profileRoot = Get-ThreeDSProfileRoot -SdRoot $SdRoot
+    $id1 = Split-Path -Leaf $profileRoot
+    $id0 = Split-Path -Leaf (Split-Path -Parent $profileRoot)
+    $sha = [Security.Cryptography.SHA256]::Create()
+    try {
+        $bytes = [Text.Encoding]::UTF8.GetBytes(('3ds-card|{0}|{1}' -f $id0.ToUpperInvariant(), $id1.ToUpperInvariant()))
+        ([BitConverter]::ToString($sha.ComputeHash($bytes))).Replace('-', '').Substring(0, 16)
+    }
+    finally { $sha.Dispose() }
 }
 
 function Get-ThreeDSInstalledTitles {
@@ -2153,5 +2173,5 @@ Export-ModuleMember -Function @(
     'Copy-ThreeDSInstallQueue', 'Import-ThreeDSGm9Exports', 'Get-ThreeDSInstallBatches',
     'Get-ThreeDSKnownTitleManifests', 'Resolve-ThreeDSInstallBatches', 'Resolve-ThreeDSBatchReturn',
     'Find-ThreeDSPreparedArtifact', 'Remove-ThreeDSInstallFolder', 'Save-ThreeDSManagerState',
-    'Get-ThreeDSManagerState', 'Get-ThreeDSSdSpaceUsage', 'Test-ThreeDSCancellation'
+    'Get-ThreeDSManagerState', 'Get-ThreeDSSdSpaceUsage', 'Test-ThreeDSCancellation', 'Get-ThreeDSCardKey'
 )
