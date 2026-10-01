@@ -54,7 +54,7 @@ try {
 
     # --- The manager's own functions and controls --------------------------------------
     $ast = [System.Management.Automation.Language.Parser]::ParseFile((Join-Path $repo 'scripts\library-manager.ps1'), [ref]$null, [ref]$null)
-    foreach ($name in 'Get-CardStateName','New-GuidedInstallState','Use-CardState','Use-CardKey','Import-LegacyCardState','Assert-SameCard','Invoke-CheckForChanges','Invoke-ApplyChanges','Show-StoppedNotice','Register-CopiedBatch','Add-PendingRemoval','Clear-RemovalMark','Get-RemovalChanges','Invoke-RefreshAll','Read-SmartSdState','Complete-GuidedReturn','Resolve-PendingRemoval','Copy-WaitingGames','Copy-GuidedQueue','Show-Notice','Add-GuidedBacklog','Get-GuidedInstallPlan','Save-GuidedInstallState','Save-PreparationFailures','Set-PreparationFailure','Clear-PreparationFailure','Build-ViewItems','Update-SdSpace','New-PieSliceGeometry','Format-SpaceSize','Update-NextStep','Update-SelectionSummary','Apply-Filter','Get-FriendlyTitle') {
+    foreach ($name in 'Show-SetupStep','Get-SetupStep','Test-FoldersOverlap','Get-CardStateName','New-GuidedInstallState','Use-CardState','Use-CardKey','Import-LegacyCardState','Assert-SameCard','Invoke-CheckForChanges','Invoke-ApplyChanges','Show-StoppedNotice','Register-CopiedBatch','Add-PendingRemoval','Clear-RemovalMark','Get-RemovalChanges','Invoke-RefreshAll','Read-SmartSdState','Complete-GuidedReturn','Resolve-PendingRemoval','Copy-WaitingGames','Copy-GuidedQueue','Show-Notice','Add-GuidedBacklog','Get-GuidedInstallPlan','Save-GuidedInstallState','Save-PreparationFailures','Set-PreparationFailure','Clear-PreparationFailure','Build-ViewItems','Update-SdSpace','New-PieSliceGeometry','Format-SpaceSize','Update-NextStep','Update-SelectionSummary','Apply-Filter','Get-FriendlyTitle') {
         $fn = $ast.Find({ param($n) $n -is [System.Management.Automation.Language.FunctionDefinitionAst] -and $n.Name -eq $name }, $true)
         if (-not $fn) { throw "$name not found in the manager." }
         . ([scriptblock]::Create($fn.Extent.Text))
@@ -104,6 +104,9 @@ try {
     $script:SearchBox = New-Object Windows.Controls.TextBox
     $script:LibraryPath = New-Object Windows.Controls.TextBox; $script:LibraryPath.Text = (Join-Path $root 'Active')
     $script:CachePath = New-Object Windows.Controls.TextBox; $script:CachePath.Text = $cache
+    New-Item -ItemType Directory -Path $script:LibraryPath.Text -Force | Out-Null
+    # Setup is finished in this test: helper tools installed, game and working folders chosen.
+    $script:ToolsReady = $true; $script:ToolsError = ''; $script:SetupAction = New-Object Windows.Controls.Button
     $script:Boot9Path = New-Object Windows.Controls.TextBox
     $script:SdTargets = New-Object Windows.Controls.ComboBox
     $script:RepositoryRoot = $repo

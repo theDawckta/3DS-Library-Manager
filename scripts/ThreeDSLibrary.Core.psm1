@@ -53,22 +53,42 @@ function Assert-ThreeDSExternalDataPath {
     $fullPath
 }
 
+function Find-ThreeDSPython {
+    <#
+        Finds an installed Python 3: the newest python.org install for all users or for this user
+        (its default), then the py launcher, then python.exe on PATH.  The Microsoft Store
+        placeholder in WindowsApps only opens the Store, so it never counts.
+    #>
+    $installs = @(
+        @(Get-ChildItem -Path (Join-Path $env:ProgramFiles 'Python3*\python.exe') -ErrorAction SilentlyContinue)
+        @(if ($env:LOCALAPPDATA) { Get-ChildItem -Path (Join-Path $env:LOCALAPPDATA 'Programs\Python\Python3*\python.exe') -ErrorAction SilentlyContinue })
+    ) | Where-Object { $_ -and $_.Directory.Name -match '^Python3(\d+)' } |
+        Sort-Object { [int]([regex]::Match($_.Directory.Name, '^Python3(\d+)').Groups[1].Value) } -Descending
+    if ($installs) { return @($installs)[0].FullName }
+    $launcher = Get-Command py.exe -ErrorAction SilentlyContinue
+    if ($launcher) {
+        $found = & $launcher.Source -3 -c 'import sys; print(sys.executable)' 2>$null | Select-Object -First 1
+        if ($LASTEXITCODE -eq 0 -and $found -and (Test-Path -LiteralPath $found -PathType Leaf)) { return [string]$found }
+    }
+    $onPath = @(Get-Command python.exe -All -ErrorAction SilentlyContinue | Where-Object { $_.Source -notmatch '\\WindowsApps\\' })
+    if ($onPath) { return $onPath[0].Source }
+    $null
+}
+
 function Get-ThreeDSToolchain {
     $dataRoot = Get-ThreeDSManagerDataRoot
     $toolRoot = Join-Path $dataRoot 'tools'
     $ctrtool = Join-Path $toolRoot 'ctrtool\ctrtool.exe'
     $converter = Join-Path $toolRoot '3dsconv\3dsconv\3dsconv.py'
     $pydeps = Join-Path $toolRoot 'pydeps'
-    $pythonCandidates = @(
-        'C:\Program Files\Python313\python.exe'
-        'C:\Program Files\Python312\python.exe'
-        'C:\Program Files\Python311\python.exe'
-    )
-    $python = $pythonCandidates | Where-Object { Test-Path -LiteralPath $_ } | Select-Object -First 1
-    if (-not $python) {
-        $command = Get-Command python.exe -ErrorAction SilentlyContinue
-        if ($command) { $python = $command.Source }
+    # Prefer the Python that setup installed pyaes for; look again only if it has gone.
+    $python = $null
+    $record = Join-Path $toolRoot 'toolchain.json'
+    if (Test-Path -LiteralPath $record) {
+        try { $recorded = [string](Get-Content -LiteralPath $record -Raw | ConvertFrom-Json).PythonPath } catch { $recorded = '' }
+        if ($recorded -and (Test-Path -LiteralPath $recorded -PathType Leaf)) { $python = $recorded }
     }
+    if (-not $python) { $python = Find-ThreeDSPython }
 
     [pscustomobject]@{
         ToolRoot = $toolRoot
@@ -2173,5 +2193,6 @@ Export-ModuleMember -Function @(
     'Copy-ThreeDSInstallQueue', 'Import-ThreeDSGm9Exports', 'Get-ThreeDSInstallBatches',
     'Get-ThreeDSKnownTitleManifests', 'Resolve-ThreeDSInstallBatches', 'Resolve-ThreeDSBatchReturn',
     'Find-ThreeDSPreparedArtifact', 'Remove-ThreeDSInstallFolder', 'Save-ThreeDSManagerState',
-    'Get-ThreeDSManagerState', 'Get-ThreeDSSdSpaceUsage', 'Test-ThreeDSCancellation', 'Get-ThreeDSCardKey'
+    'Get-ThreeDSManagerState', 'Get-ThreeDSSdSpaceUsage', 'Test-ThreeDSCancellation', 'Get-ThreeDSCardKey',
+    'Find-ThreeDSPython'
 )

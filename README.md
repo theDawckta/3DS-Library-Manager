@@ -25,8 +25,8 @@ what installed and cleans up after itself.
 - A 3DS, 2DS or New 3DS running custom firmware with **GodMode9**. Set this up by following
   [3ds.hacks.guide](https://3ds.hacks.guide/); this app does not do it for you.
 - A Windows 10 or 11 PC. Windows PowerShell 5.1 is built in.
-- [Python 3](https://www.python.org/downloads/), which the converter uses, and
-  [Git for Windows](https://git-scm.com/download/win), which is used once to set up the helper tools.
+- [Python 3](https://www.python.org/downloads/), which the converter uses. The installer's default
+  options are fine.
 - A **reliable** USB microSD reader. A flaky reader can corrupt copies without any error message.
 - The console's SD card, formatted FAT32 as 3ds.hacks.guide describes.
 - Game files (`.3ds`, `.cci` or `.cia`) **dumped from games you own**. This project includes no
@@ -37,12 +37,14 @@ what installed and cleans up after itself.
 1. Download this repository (**Code > Download ZIP**) and unzip it, or clone it.
 2. Power off the 3DS and put its SD card in the PC's reader.
 3. Double-click **`start.vbs`**. The app opens without a console window or an admin prompt.
-4. Open **Settings**:
-   - Choose the folder that holds your game files.
-   - Choose a working folder for converted games. It needs room for a converted copy of each game.
-   - Click **Set up helper tools**. This downloads pinned versions of
-     [CTRTool](https://github.com/3DSGuy/Project_CTR) and
+4. The first time, the app sets itself up. Follow the green **Finish setup** card:
+   - It installs its helper tools by itself, usually in under a minute. It downloads pinned, checksum-
+     verified copies of [CTRTool](https://github.com/3DSGuy/Project_CTR) and
      [3dsconv](https://github.com/ihaveamac/3dsconv) into `%LOCALAPPDATA%\BackupsNew3DS\LibraryManager`.
+     If Python is missing, the card says so; install it, then click **Set up helper tools**.
+   - Click **Choose game folder** and pick the folder that holds your game files.
+   - Converted games are kept in an `InstallReady` folder created beside your game folder. It needs
+     room for a converted copy of each game, and you can move it in **Settings**.
 5. The game list fills in. Tick **Add** for games showing *Playable now? No*, then click the button.
 6. When the green **Next step** card says *Batch ready*, click **Safely Eject SD**. On the 3DS, open
    GodMode9 and go to the folder it names under `SDCARD/cias/InstallQueue/`. Mark every game with `L`,

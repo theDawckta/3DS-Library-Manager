@@ -68,6 +68,9 @@ script, launcher, tests, and documentation. It contains no ROMs, keys, or consol
   reader identity. Every check binds the inserted card. Every write first asserts that the card in
   the reader is the one shown (`Assert-SameCard`), because a different card can match the reader,
   size and drive letter. The last card's key may be remembered for display only.
+- Required setup is never hidden. Do it automatically when no user decision is needed (helper tools,
+  default working folder). Otherwise the Next step card prompts with one button. Tool setup must be
+  safely repeatable, verify every download against a pinned hash, and need nothing but Python 3.
 - **Check for changes** is the only manual check. It finds the card again and then checks the library
   and card, and it stays available when no card is detected. Do not add a separate SD re-check control.
 - Never reuse an install-batch name, even after its folder is removed: its private record holds the

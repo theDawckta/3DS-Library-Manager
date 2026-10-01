@@ -14,6 +14,7 @@ if (-not $env:THREEDS_MANAGER_DATA_ROOT) {
 
 $selfContained = @(
     'test-aggregation.ps1'
+    'test-first-run.ps1'
     'test-sd-lifecycle.ps1'
     'test-installed-inventory.ps1'
     'test-safe-eject.ps1'

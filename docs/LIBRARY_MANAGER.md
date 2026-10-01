@@ -190,9 +190,22 @@ For command-line diagnosis, run:
 powershell.exe -NoProfile -STA -ExecutionPolicy Bypass -File .\scripts\library-manager.ps1
 ```
 
-On first use, open **Settings** and select **Set up helper tools**. The setup installs a pinned CTRTool and 3dsconv toolchain below
-`%LOCALAPPDATA%\BackupsNew3DS\LibraryManager`; it does not place tools or keys in this repository.
-Once ready, the setup control is hidden.
+Setup is required, so it is never hidden. Until it is finished, the green Next step card is a
+**Finish setup** checklist with one button for the one thing only you can do:
+
+- **Helper tools:** installed by themselves on first start. Pinned, checksum-verified CTRTool and
+  3dsconv files and the pyaes library go under `%LOCALAPPDATA%\BackupsNew3DS\LibraryManager`, never
+  into this repository. Setup is safe to repeat: finished steps are skipped and a half-finished
+  attempt is repaired. If Python 3 is missing, the card says so; install it, then choose **Set up
+  helper tools**.
+- **Game folder:** choose the folder that holds your game files.
+- **Working folder:** for converted games, created automatically as `InstallReady` beside the game
+  folder. If the game folder is at the root of a drive, it goes in the app's data folder instead. It
+  must not be inside the game folder, because the game scan reads every subfolder. Change it in
+  **Settings** if needed.
+
+When the last step is done, the first check starts by itself. **Check for changes** and automatic
+card detection wait until setup is finished.
 
 The boot9 chooser is hidden unless the library contains an encrypted `.3ds`/`.cci` physical-cartridge
 dump. boot9 is a small key file dumped from the user's own 3DS and is used only to decrypt that kind of

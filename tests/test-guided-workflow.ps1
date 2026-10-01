@@ -66,7 +66,7 @@ $implementation=$ui+(Get-Content -LiteralPath (Join-Path $repo 'scripts\ThreeDSL
 foreach($required in @('Apply changes','Add to SD card','Remove from 3DS','marked for removal','Kept what had finished','waiting to copy','copied automatically','Batch returned:','GodMode9 folder:','Safely Eject SD','Install game image')){
     if($implementation -notmatch [regex]::Escape($required)){throw "Guided workflow copy is missing: $required"}
 }
-foreach($gone in @('Prepare next batch','BatchSize','GamesPerBatch','Verify file','Retry failed','RetryFailed','Copy to SD card','PrepareNextBatch','ready to copy','PlanRemoval','PrepareSelected','Prepare removal instructions','Remove from 3DS...','Stop safely','Check SD card','RefreshSd')){
+foreach($gone in @('Prepare next batch','BatchSize','GamesPerBatch','Verify file','Retry failed','RetryFailed','Copy to SD card','PrepareNextBatch','ready to copy','PlanRemoval','PrepareSelected','Prepare removal instructions','Remove from 3DS...','Stop safely','Check SD card','RefreshSd','SetupTools','Open Settings and choose Set up helper tools')){
     if($ui -match [regex]::Escape($gone)){throw "Removed workflow piece is back in the interface: $gone"}
 }
 Assert-Equal 1 ([regex]::Matches($ui,'Copy-ThreeDSInstallQueue ')).Count 'Only Copy-GuidedQueue may write games to the SD card.'

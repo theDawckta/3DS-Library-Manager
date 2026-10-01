@@ -68,7 +68,7 @@ try {
 
     # --- The manager's own functions and controls --------------------------------------
     $ast = [System.Management.Automation.Language.Parser]::ParseFile((Join-Path $repo 'scripts\library-manager.ps1'), [ref]$null, [ref]$null)
-    foreach ($name in 'Get-CardStateName','New-GuidedInstallState','Read-SmartSdState','Complete-GuidedReturn','Get-GuidedInstallPlan','Add-GuidedBacklog','Save-GuidedInstallState','Build-ViewItems','Update-SdSpace','New-PieSliceGeometry','Format-SpaceSize','Update-NextStep','Update-SelectionSummary','Get-RemovalChanges','Apply-Filter','Get-FriendlyTitle') {
+    foreach ($name in 'Show-SetupStep','Get-SetupStep','Test-FoldersOverlap','Get-CardStateName','New-GuidedInstallState','Read-SmartSdState','Complete-GuidedReturn','Get-GuidedInstallPlan','Add-GuidedBacklog','Save-GuidedInstallState','Build-ViewItems','Update-SdSpace','New-PieSliceGeometry','Format-SpaceSize','Update-NextStep','Update-SelectionSummary','Get-RemovalChanges','Apply-Filter','Get-FriendlyTitle') {
         $fn = $ast.Find({ param($n) $n -is [System.Management.Automation.Language.FunctionDefinitionAst] -and $n.Name -eq $name }, $true)
         if (-not $fn) { throw "$name not found in the manager." }
         . ([scriptblock]::Create($fn.Extent.Text))
@@ -85,6 +85,10 @@ try {
     $script:GameGrid = New-Object Windows.Controls.DataGrid
     $script:SearchBox = New-Object Windows.Controls.TextBox
     $script:CachePath = New-Object Windows.Controls.TextBox; $script:CachePath.Text = $cache
+    $script:LibraryPath = New-Object Windows.Controls.TextBox; $script:LibraryPath.Text = (Join-Path $root 'Active')
+    New-Item -ItemType Directory -Path $script:LibraryPath.Text -Force | Out-Null
+    # Setup is finished in this test: helper tools installed, game and working folders chosen.
+    $script:ToolsReady = $true; $script:ToolsError = ''; $script:SetupAction = New-Object Windows.Controls.Button
     $script:SdTargets = New-Object Windows.Controls.ComboBox
     $script:SdLifecycle = [pscustomobject]@{ ShowsSuccessfulEject=$false; CanUseSd=$true; IsMounted=$true }
     $script:Busy = $false; $script:InlineNotice = ''; $script:PendingRemoval = $null; $script:LastRemovalConfirmed = ''
